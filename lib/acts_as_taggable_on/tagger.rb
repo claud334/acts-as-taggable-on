@@ -53,6 +53,19 @@ module ActsAsTaggableOn
         taggable.save unless skip_save
       end
 
+      def add_tags(taggable, opts={})                                                                                                                           
+        opts.reverse_merge!(:force => true)                                                                                                                     
+        skip_save = opts.delete(:skip_save)                                                                                                                     
+        return false unless taggable.respond_to?(:is_taggable?) && taggable.is_taggable?                                                                        
+                                                                                                                                                            
+        raise "You need to specify a tag context using :on"                unless opts.has_key?(:on)                                                            
+        raise "You need to specify some tags using :with"                  unless opts.has_key?(:with)                                                          
+        raise "No context :#{opts[:on]} defined in #{taggable.class.to_s}" unless (opts[:force] || taggable.tag_types.include?(opts[:on]))                      
+                                                                                                                                                            
+        taggable.add_to_owner_tag_list_on(self, opts[:on].to_s, opts[:with])                                                                                    
+        taggable.save unless skip_save                                                                                                                          
+      end  
+
       def is_tagger?
         self.class.is_tagger?
       end
