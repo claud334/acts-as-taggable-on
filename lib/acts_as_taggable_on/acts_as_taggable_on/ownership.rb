@@ -70,7 +70,7 @@ module ActsAsTaggableOn::Taggable
         add_custom_context(context)                                                                                                                             
                                                                                                                                                             
         cache = cached_owned_tag_list_on(context)                                                                                                               
-        cache[owner] = cache[owner].add(tag_string, parse: true)                                                                                                
+        cache[owner] = ActsAsTaggableOn::TagList.from(new_list).add(Array(cache[owner]))
       end   
       
       def reload(*args)
