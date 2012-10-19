@@ -65,6 +65,13 @@ module ActsAsTaggableOn::Taggable
 
         cache[owner] = ActsAsTaggableOn::TagList.from(new_list)
       end
+
+      def add_to_owner_tag_list_on(owner, context, tag_string)                                                                                                  
+        add_custom_context(context)                                                                                                                             
+                                                                                                                                                            
+        cache = cached_owned_tag_list_on(context)                                                                                                               
+        cache[owner] = cache[owner].add(tag_string, parse: true)                                                                                                
+      end   
       
       def reload(*args)
         self.class.tag_types.each do |context|
